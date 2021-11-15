@@ -44,21 +44,36 @@ class LinkedList:
         self.size += 1
 
     def deleteHead(self):
-        self.size -= 1
         prevHead = self.head
-        self.head = self.head.getNext()
+
+        if self.size == 0:
+            return None 
+        elif self.size == 1: 
+            self.head = None 
+            self.tail = None 
+        else:
+            self.head = prevHead.getNext()
+            
+        self.size -= 1
         return prevHead.getItem()
     
     def deleteTail(self):
-        newTail = self.head
-        for i in range(self.size - 1):
-            newTail = newTail.getNext()
-        
         prevTail = self.tail
-        self.tail = newTail
-        self.tail.getNext()
+
+        if self.size == 0:
+            return None 
+        elif self.size == 1: 
+            self.head = None 
+            self.tail = None 
+        else: 
+            newTail = self.head
+            for i in range(self.size - 1):
+                newTail = newTail.getNext()
+            self.tail = newTail
+
         self.size -= 1
         return prevTail.getItem()
+
 
     def count(self, item):
         numNodes = 0
@@ -80,44 +95,52 @@ class LinkedList:
 
             curr = curr.getNext()
 
+        return -1
+
     def insert(self, index, item):
         n = Node(item)
+
         if (index == 0):
             self.prepend(item)
-        elif (index == self.size):
+        elif (index >= self.size):
             self.append(item)
         else:
-            leftNode = None
-            rightNode = None
-
             curr = self.head
             for i in range(index-1):
                 curr = curr.getNext()
 
-            leftNode = curr
-            rightNode = curr.getNext()
+            prevNode = curr
+            nextNode = curr.getNext()
 
-            leftNode.setNext(n)
-            n.setNext(rightNode)  
+            prevNode.setNext(n)
+            n.setNext(nextNode)  
             self.size += 1
 
     def pop(self, index):
         if (index == 0):
-            self.deleteHead()
+            return self.deleteHead()
         elif (index == self.size):
-            self.deleteTail()
+            return self.deleteTail()
         else:
-            leftNode = self.head
+            prevNode = self.head
             for i in range(index-1):
-                leftNode = leftNode.getNext()
+                prevNode = prevNode.getNext()
 
-            rightNode = leftNode.getNext().getNext()
-            leftNode.setNext(rightNode)
+            middleNode = prevNode.getNext()
+            nextNode = middleNode.getNext()
+            prevNode.setNext(nextNode)
             self.size -= 1
+
+            return middleNode.getItem()
 
     def remove(self, item):
         index = self.index(item)
-        self.pop(index)
+        if (index == -1): 
+            return None
+        else:
+            return self.pop(index)
+
+        #TODO: write and raise errors
 
         
     
