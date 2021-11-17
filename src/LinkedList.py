@@ -77,14 +77,11 @@ class LinkedList:
 
     def count(self, item):
         numNodes = 0
-
         curr = self.head
         for i in range(self.size):
             if curr.getItem() == item:
                 numNodes += 1
-
             curr = curr.getNext()
-        
         return numNodes
 
     def index(self, item):
@@ -92,17 +89,16 @@ class LinkedList:
         for i in range(self.size):
             if curr.getItem() == item:
                 return i
-
             curr = curr.getNext()
-
         return -1
 
     def insert(self, index, item):
+        """  """
         n = Node(item)
 
-        if (index == 0):
+        if index == 0:
             self.prepend(item)
-        elif (index >= self.size):
+        elif index >= self.size:
             self.append(item)
         else:
             curr = self.head
@@ -117,31 +113,27 @@ class LinkedList:
             self.size += 1
 
     def pop(self, index):
-        if (index == 0):
+        if index == 0:
             return self.deleteHead()
-        elif (index == self.size):
+        elif index == self.size-1:
             return self.deleteTail()
         else:
-            prevNode = self.head
+            curr = self.head
             for i in range(index-1):
-                prevNode = prevNode.getNext()
+                curr = curr.getNext()
 
-            middleNode = prevNode.getNext()
+            prevNode = curr
+            middleNode = curr.getNext()
             nextNode = middleNode.getNext()
             prevNode.setNext(nextNode)
-            self.size -= 1
 
+            self.size -= 1
             return middleNode.getItem()
 
     def remove(self, item):
-        index = self.index(item)
-        if (index == -1): 
-            return None
-        else:
-            return self.pop(index)
-
-        #TODO: write and raise errors
-
+        idx = self.index(item)
+        self.pop(idx)
+        return 
         
     
 if __name__ == "__main__":		   # test the following methods: init, str, append, len
