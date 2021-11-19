@@ -7,7 +7,7 @@ class LinkedList:
         self.size = 0
 
     def __str__(self):
-        """ return string representation of linked list """
+        """ return string representation of linked list (returns string)"""
         s = "head-->"
 
         curr = self.head
@@ -19,11 +19,11 @@ class LinkedList:
         return s
 
     def __len__(self):
-        """ return the length of the linked list """
+        """ return the length of the linked list (returns int)"""
         return self.size
 
     def isEmpty(self):
-        """ return a boolean flag indicating whether the list is empty or not """
+        """ return a boolean flag indicating whether the list is empty or not (returns boolean"""
         if self.size == 0:
             return True
         return False 
@@ -53,7 +53,7 @@ class LinkedList:
         return 
 
     def deleteHead(self):
-        """ delete the head node, return item stored in deleted node """
+        """ delete the head node, return item stored in deleted node (returns node item (typically string)) """
         prevHead = self.head
 
         if self.size == 0:
@@ -68,7 +68,7 @@ class LinkedList:
         return prevHead.getItem()
     
     def deleteTail(self):
-        """ delete the tail node, return item stored in deleted node """
+        """ delete the tail node, return item stored in deleted node (returns node item (typically string)) """
         prevTail = self.tail
 
         if self.size == 0:
@@ -87,7 +87,7 @@ class LinkedList:
 
 
     def count(self, item):
-        """ count and return the number of nodes that contain item """
+        """ count and return the number of nodes that contain item (return int) """
         numNodes = 0
         curr = self.head
         for i in range(self.size):
@@ -97,7 +97,7 @@ class LinkedList:
         return numNodes
 
     def index(self, item):
-        """ return the index of the first node that contains item """
+        """ return the index of the first node that contains item (returns int) -1 if not found"""
         curr = self.head
         for i in range(self.size):
             if curr.getItem() == item:
@@ -127,7 +127,7 @@ class LinkedList:
         return
 
     def pop(self, index):
-        """ remove and return item at index """
+        """ remove and return item at index (returns node item (typically string)) """
         if index == 0:
             return self.deleteHead()
         elif index == self.size-1:
