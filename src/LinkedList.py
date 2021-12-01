@@ -22,6 +22,34 @@ class LinkedList:
         """ return the length of the linked list (returns int)"""
         return self.size
 
+    def __getitem__(self, index):
+        """ return the item at the given index"""
+        curr = self.head
+        for i in range(index):
+            curr = curr.getNext()
+        
+        return curr.getItem()
+
+    def __setitem__(self, index, value):
+        """ sets the item at the given index"""
+        curr = self.head
+        for i in range(index):
+            curr = curr.getNext()
+        
+        curr.setItem(value)
+        return
+
+    def __contain__(self, value):
+        """ returns true if value is contained in list """
+        curr = self.head
+        for i in range(self.size):
+            if curr.getItem() == value:
+                return True
+            curr = curr.getNext()
+
+        return False
+    
+
     def isEmpty(self):
         """ return a boolean flag indicating whether the list is empty or not (returns boolean"""
         if self.size == 0:
@@ -396,6 +424,8 @@ if __name__ == "__main__":		   # test the following methods: init, str, append, 
     assert str(LL) == "head-->(D)<--tail" 
     LL.remove("D")
     assert str(LL) == "head--><--tail" 
+
+    
 
 
 
