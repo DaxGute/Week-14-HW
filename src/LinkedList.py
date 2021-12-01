@@ -31,7 +31,7 @@ class LinkedList:
     def append(self, item): 
         """ add new node, containing item, to end of the list """
         n = Node(item)
-        if self.size == 0:
+        if self.isEmpty():
             self.head = n
             self.tail = n
         else:
@@ -43,7 +43,7 @@ class LinkedList:
     def prepend(self, item):
         """ add new node, containing item, to beginning of the list """
         n = Node(item)
-        if self.size == 0:
+        if self.isEmpty():
             self.head = n
             self.tail = n
         else:
@@ -56,7 +56,7 @@ class LinkedList:
         """ delete the head node, return item stored in deleted node (returns node item (typically string)) """
         prevHead = self.head
 
-        if self.size == 0:
+        if self.isEmpty():
             return None 
         elif self.size == 1: 
             self.head = None 
@@ -71,14 +71,14 @@ class LinkedList:
         """ delete the tail node, return item stored in deleted node (returns node item (typically string)) """
         prevTail = self.tail
 
-        if self.size == 0:
+        if self.isEmpty():
             return None 
         elif self.size == 1: 
             self.head = None 
             self.tail = None 
         else: 
             newTail = self.head
-            for i in range(self.size - 1):
+            for i in range(self.size - 2):
                 newTail = newTail.getNext()
             self.tail = newTail
 
@@ -103,96 +103,294 @@ class LinkedList:
             if curr.getItem() == item:
                 return i
             curr = curr.getNext()
-        return -1
+        raise ValueError("'" + item + "' is not in list")
 
     def insert(self, index, item):
         """ insert node containing item at given index """
         n = Node(item)
 
-        if index <= 0:
-            self.prepend(item)
-        elif index >= self.size:
+        if index >= self.size:
             self.append(item)
         else:
-            curr = self.head
-            for i in range(index-1):
-                curr = curr.getNext()
+            if index < 0:
+                index = self.size + index
+                if index < 0:
+                    index = 0
+            
+            if index == 0:
+                self.prepend(item)
+            else:
+                curr = self.head
+                for i in range(index-1):
+                    curr = curr.getNext()
 
-            prevNode = curr
-            nextNode = curr.getNext()
+                prevNode = curr
+                nextNode = curr.getNext()
 
-            prevNode.setNext(n)
-            n.setNext(nextNode)  
-            self.size += 1
+                prevNode.setNext(n)
+                n.setNext(nextNode)  
+                self.size += 1
         return
 
     def pop(self, index):
         """ remove and return item at index (returns node item (typically string)) """
-        if index == 0:
-            return self.deleteHead()
-        elif index == self.size-1:
-            return self.deleteTail()
+        if self.isEmpty():
+            raise IndexError("pop from empty list")
+        elif index < self.size:
+            if index == self.size-1:
+                return self.deleteTail()
+            else:
+                if index < 0:
+                    index = self.size + index
+                    if index < 0:
+                        raise IndexError("pop index out of range")
+                if index == 0:
+                    return self.deleteHead()
+                else:
+                    curr = self.head
+                    for i in range(index-1):
+                        curr = curr.getNext()
+
+                    prevNode = curr
+                    middleNode = curr.getNext()
+                    nextNode = middleNode.getNext()
+                    prevNode.setNext(nextNode)
+
+                    self.size -= 1
+                    return middleNode.getItem()
         else:
-            curr = self.head
-            for i in range(index-1):
-                curr = curr.getNext()
-
-            prevNode = curr
-            middleNode = curr.getNext()
-            nextNode = middleNode.getNext()
-            prevNode.setNext(nextNode)
-
-            self.size -= 1
-            return middleNode.getItem()
+            raise IndexError("pop index out of range")
 
     def remove(self, item):
         """ remove and return item at index"""
-        idx = self.index(item)
-        self.pop(idx)
-        return 
+        currNode = self.head
+        if currNode.getItem() == item:
+            self.deleteHead()
+            return
+        
+        prevNode = currNode
+        for i in range(self.size - 2):
+            midNode = prevNode.getNext()
+            if midNode.getItem() == item:
+                nextNode = midNode.getNext()
+                prevNode.setNext(nextNode)
+                self.size -= 1
+                return
+            prevNode = prevNode.getNext()
+
+        lastNode = prevNode.getNext()
+        if lastNode.getItem() == item:
+            self.tail = prevNode
+            self.size -= 1
+            return 
+
+        raise ValueError("list.remove(x): x not in list")
+            
         
     
 if __name__ == "__main__":		   # test the following methods: init, str, append, len
     LL = LinkedList()
-    assert len(LL) == 0			    
+    """ Testing isEmpty() Method"""
+    assert LL.isEmpty() == True
+    LL.append("A")
+    assert LL.isEmpty() == False
+    LL.remove("A")
+    assert LL.isEmpty() == True
+
+    LL = LinkedList()
+    """ Testing len() Method """
+    assert len(LL) == 0
+    LL.append("A")
+    assert len(LL) == 1
+    LL.prepend("B")
+    assert len(LL) == 2
+    LL.deleteHead()
+    assert len(LL) == 1
+    LL.append("A")
+    assert len(LL) == 2
+    LL.deleteTail()
+    assert len(LL) == 1
+    LL.append("A")
+    assert len(LL) == 2
+    LL.prepend("B")
+    assert len(LL) == 3
+    LL.pop(1)
+    assert len(LL) == 2
+    LL.remove("A")
+    assert len(LL) == 1
+
+    LL = LinkedList()
+    """ Testing str() Method """
     assert str(LL) == "head--><--tail"
+    LL.append("A")
+    assert str(LL) == "head-->(A)<--tail"
+    LL.prepend("B")
+    assert str(LL) == "head-->(B)(A)<--tail"
+    LL.deleteHead()
+    assert str(LL) == "head-->(A)<--tail"
+    LL.append("B")
+    assert str(LL) == "head-->(A)(B)<--tail"
+    LL.deleteTail()
+    assert str(LL) == "head-->(A)<--tail"
+    LL.append("C")
+    assert str(LL) == "head-->(A)(C)<--tail"
+    LL.prepend("B")
+    assert str(LL) == "head-->(B)(A)(C)<--tail"
+    LL.pop(1)
+    assert str(LL) == "head-->(B)(C)<--tail"
+    LL.remove("C")
+    assert str(LL) == "head-->(B)<--tail"
+
+    LL = LinkedList()
+    """ Testing append() Method """
+    LL.append("A")
+    assert str(LL) == "head-->(A)<--tail"
+    LL.append("B")
+    assert str(LL) == "head-->(A)(B)<--tail"
+    LL.append("C")
+    assert str(LL) == "head-->(A)(B)(C)<--tail"
+    assert len(LL) == 3
+    LL.pop(0)
+    LL.pop(0)
+    LL.pop(0)
+    LL.append("B")
+    assert str(LL) == "head-->(B)<--tail"
+    LL.append("C")
+    assert str(LL) == "head-->(B)(C)<--tail"
+
+    LL = LinkedList()
+    """ Testing prepend() Method """
+    LL.prepend("A")
+    assert str(LL) == "head-->(A)<--tail"
+    LL.prepend("B")
+    assert str(LL) == "head-->(B)(A)<--tail"
+    LL.prepend("C")
+    assert str(LL) == "head-->(C)(B)(A)<--tail"
+    assert len(LL) == 3
+    LL.pop(0)
+    LL.pop(0)
+    LL.pop(0)
+    LL.prepend("B")
+    assert str(LL) == "head-->(B)<--tail"
+    LL.prepend("C")
+    assert str(LL) == "head-->(C)(B)<--tail"
+
+    LL = LinkedList()
+    """ Testing deleteHead() Method """
+    assert LL.deleteHead() == None
+    assert str(LL) == "head--><--tail" 
     LL.append("A")
     LL.append("B")
     LL.append("C")
-    assert len(LL) == 3
-    assert str(LL) == "head-->(A)(B)(C)<--tail"
-    
-    LL.prepend("A")
-    LL.prepend("B")
-    LL.prepend("C")
-    assert len(LL) == 6
-    assert str(LL) == "head-->(C)(B)(A)(A)(B)(C)<--tail"
+    assert LL.deleteHead() == "A"
+    assert str(LL) == "head-->(B)(C)<--tail" 
+    assert LL.deleteHead() == "B"
+    assert str(LL) == "head-->(C)<--tail" 
+    assert LL.deleteHead() == "C"
+    assert str(LL) == "head--><--tail" 
 
-    assert str(LL.deleteHead()) == "C"
-    assert len(LL) == 5
-    assert str(LL) == "head-->(B)(A)(A)(B)(C)<--tail"
+    LL = LinkedList()
+    """ Testing deleteTail() Method """
+    assert LL.deleteTail() == None
+    assert str(LL) == "head--><--tail" 
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    assert LL.deleteTail() == "C"
+    assert str(LL) == "head-->(A)(B)<--tail" 
+    assert LL.deleteTail() == "B"
+    assert str(LL) == "head-->(A)<--tail" 
+    assert LL.deleteTail() == "A"
+    assert str(LL) == "head--><--tail" 
 
-    assert str(LL.deleteTail()) == "C"
-    assert len(LL) == 4
-    assert str(LL) == "head-->(B)(A)(A)(B)<--tail"
+    LL = LinkedList()
+    """ Testing count() Method """
+    assert LL.count("C") == 0
+    LL.append("A")
+    LL.append("B")
+    assert LL.count("C") == 0
+    LL.append("C") 
+    assert LL.count("C") == 1
+    LL.append("A")
+    LL.append("B")
+    assert LL.count("C") == 1
+    LL.append("C") 
+    assert LL.count("C") == 2
+    LL.pop(2)
+    assert LL.count("C") == 1
 
+    LL = LinkedList()
+    """ Testing index() Method """
+    LL.append("A")
+    LL.append("B")
+    assert LL.index("A") == 0
+    LL.append("C")
+    assert LL.index("C") == 2
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    assert LL.index("C") == 2
+    LL.pop(2)
+    assert LL.index("C") == 4
 
-    assert LL.count("A") == 2
-    assert LL.count("B") == 2
-
-    assert LL.index("A") == 1
-    assert LL.index("B") == 0
-
-    LL.insert(2, "C")
-    assert str(LL) == "head-->(B)(A)(C)(A)(B)<--tail"
-
+    LL = LinkedList()
+    """ Testing insert() Method """
+    LL.insert(0, "A")
+    assert str(LL) == "head-->(A)<--tail"
     LL.pop(0)
+    LL.insert(-1, "A")
+    assert str(LL) == "head-->(A)<--tail"
     LL.pop(0)
-    assert str(LL) == "head-->(C)(A)(B)<--tail"
+    LL.insert(2, "A")
+    assert str(LL) == "head-->(A)<--tail"
+    LL.insert(-1, "B")
+    assert str(LL) == "head-->(B)(A)<--tail"
+    LL.insert(4, "C")
+    assert str(LL) == "head-->(B)(A)(C)<--tail"
+    LL.insert(-2, "D")
+    assert str(LL) == "head-->(B)(D)(A)(C)<--tail"
+    LL.insert(4, "E")
+    assert str(LL) == "head-->(B)(D)(A)(C)(E)<--tail"
+    LL.insert(-100, "F")
+    assert str(LL) == "head-->(F)(B)(D)(A)(C)(E)<--tail"
 
+    LL = LinkedList()
+    """ Testing pop() Method """
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    LL.append("D")
+    LL.append("E")
+    LL.append("F")
+    assert LL.pop(0) == "A"
+    assert str(LL) == "head-->(B)(C)(D)(E)(F)<--tail"
+    assert LL.pop(3) == "E"
+    assert str(LL) == "head-->(B)(C)(D)(F)<--tail"
+    assert LL.pop(-2) == "D"
+    assert str(LL) == "head-->(B)(C)(F)<--tail"
+    assert LL.pop(1) == "C"
+    assert str(LL) == "head-->(B)(F)<--tail"
+    assert LL.pop(1) == "F"
+    assert str(LL) == "head-->(B)<--tail"
+    assert LL.pop(0) == "B"
+    assert str(LL) == "head--><--tail"
+
+    LL = LinkedList()
+    """ Testing remove() Method """
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    LL.append("A")
+    LL.append("D")
+    LL.append("E")
+    assert str(LL) == "head-->(A)(B)(C)(A)(D)(E)<--tail"
     LL.remove("A")
-    assert str(LL) == "head-->(C)(B)<--tail"
-    
+    assert str(LL) == "head-->(B)(C)(A)(D)(E)<--tail"
+    LL.remove("A")
+    assert str(LL) == "head-->(B)(C)(D)(E)<--tail"
+    LL.remove("E")
+    assert str(LL) == "head-->(B)(C)(D)<--tail" 
+
 
 
 
