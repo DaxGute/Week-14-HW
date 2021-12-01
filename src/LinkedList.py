@@ -38,7 +38,7 @@ class LinkedList:
             self.tail.setNext(n)
             self.tail = n
         self.size += 1
-        return
+        return None 
 
     def prepend(self, item):
         """ add new node, containing item, to beginning of the list """
@@ -50,7 +50,7 @@ class LinkedList:
             n.setNext(self.head)
             self.head = n
         self.size += 1
-        return 
+        return None
 
     def deleteHead(self):
         """ delete the head node, return item stored in deleted node (returns node item (typically string)) """
@@ -130,7 +130,7 @@ class LinkedList:
                 prevNode.setNext(n)
                 n.setNext(nextNode)  
                 self.size += 1
-        return
+        return None
 
     def pop(self, index):
         """ remove and return item at index (returns node item (typically string)) """
@@ -161,12 +161,12 @@ class LinkedList:
         else:
             raise IndexError("pop index out of range")
 
-    def remove(self, item):
+    def remove(self, item): # more efficient than the two line 
         """ remove and return item at index"""
         currNode = self.head
         if currNode.getItem() == item:
             self.deleteHead()
-            return
+            return None
         
         prevNode = currNode
         for i in range(self.size - 2):
@@ -175,14 +175,14 @@ class LinkedList:
                 nextNode = midNode.getNext()
                 prevNode.setNext(nextNode)
                 self.size -= 1
-                return
+                return None
             prevNode = prevNode.getNext()
 
         lastNode = prevNode.getNext()
         if lastNode.getItem() == item:
             self.tail = prevNode
             self.size -= 1
-            return 
+            return None
 
         raise ValueError("list.remove(x): x not in list")
             
@@ -390,6 +390,12 @@ if __name__ == "__main__":		   # test the following methods: init, str, append, 
     assert str(LL) == "head-->(B)(C)(D)(E)<--tail"
     LL.remove("E")
     assert str(LL) == "head-->(B)(C)(D)<--tail" 
+    LL.remove("C")
+    assert str(LL) == "head-->(B)(D)<--tail" 
+    LL.remove("B")
+    assert str(LL) == "head-->(D)<--tail" 
+    LL.remove("D")
+    assert str(LL) == "head--><--tail" 
 
 
 
