@@ -22,23 +22,6 @@ class LinkedList:
         """ return the length of the linked list (returns int)"""
         return self.size
 
-    def __getitem__(self, index):
-        """ return the item at the given index"""
-        curr = self.head
-        for i in range(index):
-            curr = curr.getNext()
-        
-        return curr.getItem()
-
-    def __setitem__(self, index, value):
-        """ sets the item at the given index"""
-        curr = self.head
-        for i in range(index):
-            curr = curr.getNext()
-        
-        curr.setItem(value)
-        return
-
     def __contain__(self, value):
         """ returns true if value is contained in list """
         curr = self.head
@@ -48,8 +31,39 @@ class LinkedList:
             curr = curr.getNext()
 
         return False
-    
+        
+    def __getitem__(self, index):
+        """ return the item at the given index """
+        if index < 0:
+            index = self.size + index
+            if index < 0:
+                raise IndexError("list index out of range")
+        elif index >= self.size:
+            raise IndexError("list index out of range")
 
+        curr = self.head
+        for i in range(index):
+            curr = curr.getNext()
+        
+        itemValue = curr.getItem()
+        return itemValue
+
+    def __setitem__(self, index, value):
+        """ sets the item at the given index"""
+        if index < 0:
+            index = self.size + index
+            if index < 0:
+                raise IndexError("list index out of range")
+        elif index >= self.size:
+            raise IndexError("list index out of range")
+
+        curr = self.head
+        for i in range(index):
+            curr = curr.getNext()
+        
+        curr.setItem(value)
+        return
+    
     def isEmpty(self):
         """ return a boolean flag indicating whether the list is empty or not (returns boolean"""
         if self.size == 0:
@@ -172,6 +186,7 @@ class LinkedList:
                     index = self.size + index
                     if index < 0:
                         raise IndexError("pop index out of range")
+                        return
                 if index == 0:
                     return self.deleteHead()
                 else:
@@ -425,7 +440,55 @@ if __name__ == "__main__":		   # test the following methods: init, str, append, 
     LL.remove("D")
     assert str(LL) == "head--><--tail" 
 
-    
+    LL = LinkedList()
+    """ Testing __contains__() Method """
+    assert ("A" in LL) == False
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    assert ("D" in LL) == False
+    LL.append("A")
+    LL.append("D")
+    LL.append("E")
+    assert ("D" in LL) == True
+    assert ("A" in LL) == True
+    LL.remove("A")
+    LL.remove("A")
+    assert ("A" in LL) == False
+
+    LL= LinkedList()
+    """ Testing __getItem__() Method """
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    assert LL[1] == "B"
+    assert LL[0] == "A"
+    assert LL[2] == "C"
+    LL.remove("A")
+    assert LL[0] == "B"
+    LL.pop(0)
+    assert LL[0] == "C"
+    assert LL[-1] == "C"
+
+    LL= LinkedList()
+    """ Testing __setItem__() Method """
+    LL.append("A")
+    LL.append("B")
+    LL.append("C")
+    assert LL[0] == "A"
+    LL[0] = "D"
+    assert LL[0] == "D"
+    LL[0] = "E"
+    assert LL[0] == "E"
+    LL[-1] = "A"
+    assert LL[2] == "A"
+    assert LL[-1] == "A"
+
+
+
+
+
+
 
 
 
