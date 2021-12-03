@@ -1,7 +1,11 @@
 from node import *
 
 class LinkedList:
+    """ a class to implement a linked list. A linked list is a linear collection of data elements 
+    whose order is not given by their physical placement in memory """
+
     def __init__(self):
+
         self.head = None
         self.tail = None
         self.size = 0
@@ -23,17 +27,18 @@ class LinkedList:
         return self.size
 
     def __contain__(self, value):
-        """ returns true if value is contained in list """
+        """ returns true if value is contained in list (return boolean) """
+        listContains = False
         curr = self.head
         for i in range(self.size):
             if curr.getItem() == value:
-                return True
+                listContains = True
             curr = curr.getNext()
 
-        return False
+        return listContains
         
     def __getitem__(self, index):
-        """ return the item at the given index """
+        """ return the item at the given index (returns node item (typically string)) """
         if index < 0:
             index = self.size + index
             if index < 0:
@@ -49,7 +54,7 @@ class LinkedList:
         return itemValue
 
     def __setitem__(self, index, value):
-        """ sets the item at the given index"""
+        """ sets the item at the given index """
         if index < 0:
             index = self.size + index
             if index < 0:
@@ -66,9 +71,10 @@ class LinkedList:
     
     def isEmpty(self):
         """ return a boolean flag indicating whether the list is empty or not (returns boolean) """
+        isEmpty = False
         if self.size == 0:
-            return True
-        return False 
+            isEmpty = True
+        return isEmpty 
         
     def append(self, item): 
         """ add new node, containing item, to end of the list """
@@ -80,7 +86,7 @@ class LinkedList:
             self.tail.setNext(n)
             self.tail = n
         self.size += 1
-        return None 
+        return  
 
     def prepend(self, item):
         """ add new node, containing item, to beginning of the list """
@@ -92,40 +98,43 @@ class LinkedList:
             n.setNext(self.head)
             self.head = n
         self.size += 1
-        return None
+        return 
 
     def deleteHead(self):
         """ delete the head node, return item stored in deleted node (returns node item (typically string)) """
+        headItem = None
         prevHead = self.head
 
-        if self.isEmpty():
-            return None 
-        elif self.size == 1: 
-            self.head = None 
-            self.tail = None 
-        else:
-            self.head = prevHead.getNext()
-            
-        self.size -= 1
-        return prevHead.getItem()
+        if not self.isEmpty():
+            if self.size == 1: 
+                self.head = None 
+                self.tail = None 
+            else:
+                self.head = prevHead.getNext()
+            headItem = prevHead.getItem()
+            self.size -= 1
+
+        return headItem
     
     def deleteTail(self):
         """ delete the tail node, return item stored in deleted node (returns node item (typically string)) """
+        tailItem = None
         prevTail = self.tail
 
-        if self.isEmpty():
-            return None 
-        elif self.size == 1: 
-            self.head = None 
-            self.tail = None 
-        else: 
-            newTail = self.head
-            for i in range(self.size - 2):
-                newTail = newTail.getNext()
-            self.tail = newTail
+        if not self.isEmpty():
+            if self.size == 1: 
+                self.head = None 
+                self.tail = None 
+            else: 
+                newTail = self.head
+                for i in range(self.size - 2):
+                    newTail = newTail.getNext()
+                self.tail = newTail
+                self.tail.setNext(None)
+            tailItem = prevTail.getItem()
+            self.size -= 1
 
-        self.size -= 1
-        return prevTail.getItem()
+        return tailItem
 
 
     def count(self, item):
@@ -139,7 +148,7 @@ class LinkedList:
         return numNodes
 
     def index(self, item):
-        """ return the index of the first node that contains item (returns int) -1 if not found"""
+        """ return the index of the first node that contains item (returns int) """
         curr = self.head
         for i in range(self.size):
             if curr.getItem() == item:
@@ -172,66 +181,70 @@ class LinkedList:
                 prevNode.setNext(n)
                 n.setNext(nextNode)  
                 self.size += 1
-        return None
+        return
 
     def pop(self, index):
         """ remove and return item at index (returns node item (typically string)) """
+        popItem = None
+
         if self.isEmpty():
             raise IndexError("pop from empty list")
         elif index < self.size:
-            if index == self.size-1:
-                return self.deleteTail()
-            else:
+            if index < 0:
+                index = self.size + index
                 if index < 0:
-                    index = self.size + index
-                    if index < 0:
-                        raise IndexError("pop index out of range")
-                        return
-                if index == 0:
-                    return self.deleteHead()
-                else:
-                    curr = self.head
-                    for i in range(index-1):
-                        curr = curr.getNext()
+                    raise IndexError("pop index out of range")
+            if index == 0:
+                popItem = self.deleteHead()
+            elif index == self.size-1:
+                popItem = self.deleteTail()
+            else:
+                curr = self.head
+                for i in range(index-1):
+                    curr = curr.getNext()
 
-                    prevNode = curr
-                    middleNode = curr.getNext()
-                    nextNode = middleNode.getNext()
-                    prevNode.setNext(nextNode)
+                prevNode = curr
+                middleNode = curr.getNext()
+                nextNode = middleNode.getNext()
+                prevNode.setNext(nextNode)
 
-                    self.size -= 1
-                    return middleNode.getItem()
+                self.size -= 1
+                popItem = middleNode.getItem()
         else:
             raise IndexError("pop index out of range")
 
-    def remove(self, item): # more efficient than the two line 
-        """ remove and return item at index"""
+        return popItem
+
+    def remove(self, item):
+        """ remove first instance of item in list """
         currNode = self.head
+
         if currNode.getItem() == item:
             self.deleteHead()
-            return None
-        
-        prevNode = currNode
-        for i in range(self.size - 2):
-            midNode = prevNode.getNext()
-            if midNode.getItem() == item:
-                nextNode = midNode.getNext()
-                prevNode.setNext(nextNode)
-                self.size -= 1
-                return None
-            prevNode = prevNode.getNext()
-
-        lastNode = prevNode.getNext()
-        if lastNode.getItem() == item:
-            self.tail = prevNode
-            self.size -= 1
-            return None
-
-        raise ValueError("list.remove(x): x not in list")
+        elif self.head.getItem() == item:
+            self.deleteTail()
+        else:
+            prevNode = currNode
+            foundItem = False
+            for i in range(self.size - 2):
+                midNode = prevNode.getNext()
+                if midNode.getItem() == item:
+                    nextNode = midNode.getNext()
+                    prevNode.setNext(nextNode)
+                    self.size -= 1
+                    foundItem = False
+                prevNode = prevNode.getNext()
             
+            if foundItem == False:
+                raise ValueError("list.remove(x): x not in list")
+
+        return
         
     
 if __name__ == "__main__":		   # test the following methods: init, str, append, len
+    L=[]
+    L.append("a")
+    print(L.remove("a"))
     LL = LinkedList()
     """ Testing isEmpty() Method"""
     assert LL.isEmpty() == True
