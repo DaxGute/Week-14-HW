@@ -65,7 +65,7 @@ class LinkedList:
         return
     
     def isEmpty(self):
-        """ return a boolean flag indicating whether the list is empty or not (returns boolean"""
+        """ return a boolean flag indicating whether the list is empty or not (returns boolean) """
         if self.size == 0:
             return True
         return False 
