@@ -1,11 +1,32 @@
+"""
+Description: This is a LinkedList class. A linked list is a collection of objects/nodes,
+             where each node contains both the item stored in the list, as well 
+             as a “pointer” to the next node in the list. 
+Author: Daxton Gutekunst
+Date: Dec 5th
+"""
+
+""" 
+Note to Mr. Bloom: Many of my branching patterns are a bit funky. This is by design.
+                   For example, I had to include negetive indexes. I copied the 
+                   functionality from regular lists down to a t (to the best of 
+                   my knowledge). So, if there is something that seems odd, it is
+                   most likely still all my fault BUTTTT ... it also be the fact
+                   that the python list class has some interesting specific 
+                   functionality. Also, I need help with the 80 char line limit:
+                   what is the protocol for inline comments and that? Thank you so
+                   much. -Dax
+                   
+"""
+
 from node import *
 
 class LinkedList:
-    """ a class to implement a linked list. A linked list is a linear collection of data elements 
-    whose order is not given by their physical placement in memory """
+    """ a class to implement a linked list. A linked list is a linear collection 
+    of data elements whose order is not given by their physical placement in memory """
 
     def __init__(self):
-
+        """ returns a new default instance of the LinkedList class"""
         self.head = None
         self.tail = None
         self.size = 0
@@ -16,11 +37,11 @@ class LinkedList:
 
         curr = self.head
         for i in range(self.size):
-            s += ("(%s)"  %  str(curr.getItem()))
-            curr = curr.getNext()
+            s += ("(%s)"  %  str(curr.getItem()))  # Adds each node to the formatted line
+            curr = curr.getNext()                 
 
         s += ("<--tail")
-        return s
+        return s          # Sends off formatted string
 
     def __len__(self):
         """ return the length of the linked list (returns int)"""
@@ -30,27 +51,28 @@ class LinkedList:
         """ returns true if value is contained in list (return boolean) """
         listContains = False
         curr = self.head
-        for i in range(self.size):
-            if curr.getItem() == value:
+        for i in range(self.size):       
+            if curr.getItem() == value:   # Cycles through list to find match
                 listContains = True
+                break                     # Breaks out of loop after match is found
             curr = curr.getNext()
 
         return listContains
         
     def __getitem__(self, index):
         """ return the item at the given index (returns node item (typically string)) """
-        if index < 0:
+        if index < 0:       # Converts negetive index input into index that can be found
             index = self.size + index
             if index < 0:
-                raise IndexError("list index out of range")
+                raise IndexError("list index out of range") # Returns an error if that index won't exsist
         elif index >= self.size:
-            raise IndexError("list index out of range")
+            raise IndexError("list index out of range")     # Returns an error if that index won't exsist
 
         curr = self.head
         for i in range(index):
-            curr = curr.getNext()
+            curr = curr.getNext()       # Gets the node at a certain index
         
-        itemValue = curr.getItem()
+        itemValue = curr.getItem()      # Gets the item at a index
         return itemValue
 
     def __setitem__(self, index, value):
@@ -64,26 +86,26 @@ class LinkedList:
 
         curr = self.head
         for i in range(index):
-            curr = curr.getNext()
+            curr = curr.getNext()    # Gets the item at a certain index
         
-        curr.setItem(value)
+        curr.setItem(value)          # Sets item at index
         return
     
     def isEmpty(self):
         """ return a boolean flag indicating whether the list is empty or not (returns boolean) """
-        isEmpty = False
-        if self.size == 0:
-            isEmpty = True
-        return isEmpty 
+        IS_EMPTY = False
+        if self.size == 0:          # if the list is empty
+            IS_EMPTY = True
+        return IS_EMPTY 
         
     def append(self, item): 
         """ add new node, containing item, to end of the list """
         n = Node(item)
         if self.isEmpty():
-            self.head = n
+            self.head = n           # If the list is empty, it sets both the head and the tail to the same node
             self.tail = n
         else:
-            self.tail.setNext(n)
+            self.tail.setNext(n)    # otherwise, it sets the node after the tail and then makes that a new tail
             self.tail = n
         self.size += 1
         return  
@@ -92,10 +114,10 @@ class LinkedList:
         """ add new node, containing item, to beginning of the list """
         n = Node(item)
         if self.isEmpty():
-            self.head = n
+            self.head = n           # If the list is empty, it sets both the head and the tail to the same node
             self.tail = n
         else:
-            n.setNext(self.head)
+            n.setNext(self.head)    # otherwise, it sets the head after the node and then makes that a new head
             self.head = n
         self.size += 1
         return 
@@ -105,12 +127,12 @@ class LinkedList:
         headItem = None
         prevHead = self.head
 
-        if not self.isEmpty():
+        if not self.isEmpty():     # if empty, it simply returns none
             if self.size == 1: 
-                self.head = None 
+                self.head = None   # if it is of lenght one then it gets rid of head and tail
                 self.tail = None 
             else:
-                self.head = prevHead.getNext()
+                self.head = prevHead.getNext()   # it sets the new head to the item after it
             headItem = prevHead.getItem()
             self.size -= 1
 
@@ -121,16 +143,16 @@ class LinkedList:
         tailItem = None
         prevTail = self.tail
 
-        if not self.isEmpty():
+        if not self.isEmpty():       # if empty, it simply returns none
             if self.size == 1: 
-                self.head = None 
+                self.head = None     # if it is of lenght one then it gets rid of head and tail
                 self.tail = None 
             else: 
                 newTail = self.head
                 for i in range(self.size - 2):
-                    newTail = newTail.getNext()
-                self.tail = newTail
-                self.tail.setNext(None)
+                    newTail = newTail.getNext()    # gets the item right before the tail
+                self.tail = newTail                # it sets the new tail
+                self.tail.setNext(None)            # gets rids the reference to previous head
             tailItem = prevTail.getItem()
             self.size -= 1
 
@@ -141,9 +163,9 @@ class LinkedList:
         """ count and return the number of nodes that contain item (return int) """
         numNodes = 0
         curr = self.head
-        for i in range(self.size):
+        for i in range(self.size):          
             if curr.getItem() == item:
-                numNodes += 1
+                numNodes += 1               # When an node item matches the value, it adds a number to the tally
             curr = curr.getNext()
         return numNodes
 
@@ -152,34 +174,33 @@ class LinkedList:
         curr = self.head
         for i in range(self.size):
             if curr.getItem() == item:
-                return i
+                return i                    # When an node item matches the value, it returns it
             curr = curr.getNext()
-        raise ValueError("'" + item + "' is not in list")
+        raise ValueError("'" + item + "' is not in list")  # if no item is found, it throws an error
 
     def insert(self, index, item):
         """ insert node containing item at given index """
         n = Node(item)
 
         if index >= self.size:
-            self.append(item)
+            self.append(item)               # if the given index is greater or equal to the size, it appends
         else:
-            if index < 0:
+            if index < 0:                   # makes negetive index into usable index value
                 index = self.size + index
                 if index < 0:
                     index = 0
             
-            if index == 0:
+            if index == 0:                  # placed here in case of negetive index
                 self.prepend(item)
             else:
-                curr = self.head
-                for i in range(index-1):
-                    curr = curr.getNext()
+                prevNode = self.head
+                for i in range(index-1):    # gets the node that will come before the new value
+                    prevNode = prevNode.getNext()
 
-                prevNode = curr
-                nextNode = curr.getNext()
+                nextNode = prevNode.getNext()  # gets the node that will come after the new value
 
                 prevNode.setNext(n)
-                n.setNext(nextNode)  
+                n.setNext(nextNode)         # stitches them together
                 self.size += 1
         return
 
@@ -187,29 +208,30 @@ class LinkedList:
         """ remove and return item at index (returns node item (typically string)) """
         popItem = None
 
-        if self.isEmpty():
-            raise IndexError("pop from empty list")
+        if self.isEmpty():          
+            raise IndexError("pop from empty list")  # cannot be popped from an empty list
         elif index < self.size:
-            if index < 0:
+            if index < 0:                            # formats negetive indexes and throws appropriate errors
                 index = self.size + index
                 if index < 0:
                     raise IndexError("pop index out of range")
-            if index == 0:
+
+            if index == 0:                           # deletes the head if the index value is 0
                 popItem = self.deleteHead()
-            elif index == self.size-1:
+            elif index == self.size-1:               # deletes the tail if the index value is size - 1
                 popItem = self.deleteTail()
             else:
-                curr = self.head
+                prevNode = self.head        
                 for i in range(index-1):
-                    curr = curr.getNext()
+                    prevNode = prevNode.getNext()    # node before removed
 
-                prevNode = curr
-                middleNode = curr.getNext()
-                nextNode = middleNode.getNext()
+                middleNode = prevNode.getNext()      # node to be removed
+                nextNode = middleNode.getNext()      # node after removed
+
+                popItem = middleNode.getItem()       # cuts it out
                 prevNode.setNext(nextNode)
 
                 self.size -= 1
-                popItem = middleNode.getItem()
         else:
             raise IndexError("pop index out of range")
 
@@ -217,34 +239,29 @@ class LinkedList:
 
     def remove(self, item):
         """ remove first instance of item in list """
-        currNode = self.head
-
-        if currNode.getItem() == item:
+        if self.head.getItem() == item:     # checks if head is item 
             self.deleteHead()
-        elif self.head.getItem() == item:
-            self.deleteTail()
         else:
-            prevNode = currNode
-            foundItem = False
+            prevNode = self.head
+            FOUND_ITEM = False
             for i in range(self.size - 2):
                 midNode = prevNode.getNext()
                 if midNode.getItem() == item:
-                    nextNode = midNode.getNext()
+                    nextNode = midNode.getNext()     # cuts out middle node
                     prevNode.setNext(nextNode)
                     self.size -= 1
-                    foundItem = False
-                prevNode = prevNode.getNext()
+                    FOUND_ITEM = True                 # signals that it found something NOTE: IS THERE ANY WAY TO BREAK OUT OF IF STATEMENT
+                prevNode = prevNode.getNext() 
             
-            if foundItem == False:
+            if self.tail.getItem() == item:  # checks tail last
+                self.deleteTail()
+            elif FOUND_ITEM == False:         # and if nothing is found, it throws an error
                 raise ValueError("list.remove(x): x not in list")
 
         return
         
     
-if __name__ == "__main__":		   # test the following methods: init, str, append, len
-    L=[]
-    L.append("a")
-    print(L.remove("a"))
+if __name__ == "__main__":
     LL = LinkedList()
     """ Testing isEmpty() Method"""
     assert LL.isEmpty() == True
