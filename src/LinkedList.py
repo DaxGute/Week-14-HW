@@ -34,13 +34,11 @@ class LinkedList:
     def __str__(self):
         """ return string representation of linked list (returns string)"""
         s = "head-->"
-
         curr = self.head
         for i in range(self.size):
             s += ("(%s)"  %  str(curr.getItem()))  # Adds each node to the formatted line
             curr = curr.getNext()                 
-
-        s += ("<--tail")
+        s += "<--tail"
         return s          # Sends off formatted string
 
     def __len__(self):
@@ -225,10 +223,10 @@ class LinkedList:
                 for i in range(index-1):
                     prevNode = prevNode.getNext()    # node before removed
 
-                middleNode = prevNode.getNext()      # node to be removed
-                nextNode = middleNode.getNext()      # node after removed
+                midNode = prevNode.getNext()      # node to be removed
+                nextNode = midNode.getNext()      # node after removed
 
-                popItem = middleNode.getItem()       # cuts it out
+                popItem = midNode.getItem()       # cuts it out
                 prevNode.setNext(nextNode)
 
                 self.size -= 1
